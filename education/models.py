@@ -23,9 +23,28 @@ class Lesson(models.Model):
     picture = models.ImageField(upload_to='preview_lesson/', verbose_name='предварительный урок', **NULLABLE)
     link_video = models.TextField(verbose_name='ссылка на видео')
 
+    course = models.ForeignKey(Course, on_delete=models.CASCADE, verbose_name='курс', **NULLABLE)
+
     def __str__(self):
         return f'{self.title} {self.description}'
 
     class Meta:
         verbose_name = 'урок'
         verbose_name_plural = 'уроки'
+
+
+class Payments(models.Model):
+    """Платежи"""
+
+    user = models.CharField(max_length=150, verbose_name='пользователь')
+    payment_date = models.DateTimeField(auto_now_add=True, verbose_name='дата оплаты')
+    course_paid = models.BooleanField(default=False, verbose_name='оплаченный курс')
+    payment_amount = models.IntegerField(verbose_name='сумма оплаты')
+    payment_method = models.CharField(max_length=150, verbose_name='способ оплаты')
+
+    def __str__(self):
+        return f'{self.user} {self.payment_date} {self.payment_amount}'
+
+    class Meta:
+        verbose_name = 'платеж'
+        verbose_name_plural = 'платежи'
