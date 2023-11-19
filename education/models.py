@@ -7,6 +7,7 @@ class Course(models.Model):
     title = models.CharField(max_length=150, verbose_name='название курса')
     picture = models.ImageField(upload_to='course_preview/', verbose_name='предварительный просмотр курса', **NULLABLE)
     description = models.TextField(verbose_name='описание')
+    lessons_count = models.IntegerField(null=True, verbose_name='количество уроков')
 
     def __str__(self):
         return f'{self.title} {self.description}'
@@ -31,20 +32,3 @@ class Lesson(models.Model):
     class Meta:
         verbose_name = 'урок'
         verbose_name_plural = 'уроки'
-
-
-class Payments(models.Model):
-    """Платежи"""
-
-    user = models.CharField(max_length=150, verbose_name='пользователь')
-    payment_date = models.DateTimeField(auto_now_add=True, verbose_name='дата оплаты')
-    course_paid = models.BooleanField(default=False, verbose_name='оплаченный курс')
-    payment_amount = models.IntegerField(verbose_name='сумма оплаты')
-    payment_method = models.CharField(max_length=150, verbose_name='способ оплаты')
-
-    def __str__(self):
-        return f'{self.user} {self.payment_date} {self.payment_amount}'
-
-    class Meta:
-        verbose_name = 'платеж'
-        verbose_name_plural = 'платежи'
