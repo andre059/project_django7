@@ -3,6 +3,10 @@ from education.models import Lesson, Course
 
 
 class CourseSerializer(serializers.ModelSerializer):
+    lessons_count = serializers.SerializerMethodField()  #  кастомизация поля lessons_count
+
+    def get_lessons_count(self, obj):
+        return obj.lessons_count
 
     class Meta:
         model = Course
