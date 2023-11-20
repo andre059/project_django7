@@ -7,7 +7,7 @@ class Course(models.Model):
     title = models.CharField(max_length=150, verbose_name='название курса')
     picture = models.ImageField(upload_to='course_preview/', null=True, verbose_name='предварительный просмотр курса')
     description = models.TextField(verbose_name='описание')
-    lessons_count = models.CharField(max_length=150, verbose_name='количество уроков', **NULLABLE)
+    lessons_count = models.IntegerField(verbose_name='количество уроков', **NULLABLE)
 
     def __str__(self):
         return f'{self.title} {self.description}'
@@ -19,15 +19,15 @@ class Course(models.Model):
 
 class Lesson(models.Model):
     """Урок"""
-    title = models.CharField(max_length=150, verbose_name='название курса')
-    description = models.TextField(verbose_name='описание')
-    picture = models.ImageField(upload_to='preview_lesson/', verbose_name='предварительный урок', **NULLABLE)
+    title = models.CharField(max_length=150, verbose_name='название урока')
+    duration = models.IntegerField(verbose_name='продолжительность урока', **NULLABLE)
+    picture = models.ImageField(upload_to='preview_lesson/', verbose_name='предварительный просмотр урока', **NULLABLE)
     link_video = models.TextField(verbose_name='ссылка на видео')
 
-    course = models.ForeignKey(Course, on_delete=models.CASCADE, verbose_name='курс', **NULLABLE)
+    course = models.ForeignKey(Course, on_delete=models.CASCADE, related_name='lesson', verbose_name='курс', **NULLABLE)
 
     def __str__(self):
-        return f'{self.title} {self.description}'
+        return f'{self.title} {self.duration}'
 
     class Meta:
         verbose_name = 'урок'
