@@ -8,7 +8,7 @@ from users.views import UserViewSet, PaymentsCreateAPIView, PaymentsListAPIView,
 app_name = UsersConfig.name
 
 router = DefaultRouter()
-router.register(r'lesson', UserViewSet, basename='lesson')
+router.register(r'user', UserViewSet, basename='user')
 
 urlpatterns = [
     # Payments

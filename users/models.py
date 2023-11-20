@@ -1,6 +1,8 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 
+from education.models import Course
+
 NULLABLE = {'blank': True, 'null': True}
 
 
@@ -39,6 +41,7 @@ class Payments(models.Model):
     payment_method = models.CharField(max_length=150, verbose_name='способ оплаты')
 
     user = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name='пользователь')
+    course = models.ForeignKey(Course, on_delete=models.CASCADE, verbose_name='курс', **NULLABLE)
 
     def __str__(self):
         return f'{self.user} {self.payment_date} {self.payment_amount}'
