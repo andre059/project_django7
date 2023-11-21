@@ -8,7 +8,6 @@ class Course(models.Model):
     title = models.CharField(max_length=150, verbose_name='название курса')
     picture = models.ImageField(upload_to='course_preview/', null=True, verbose_name='предварительный просмотр курса')
     description = models.TextField(verbose_name='описание')
-    lessons_count = models.IntegerField(verbose_name='количество уроков', **NULLABLE)
 
     def __str__(self):
         return f'{self.title} {self.description}'
