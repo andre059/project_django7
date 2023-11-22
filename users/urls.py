@@ -1,5 +1,7 @@
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
+from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
+
 from users.apps import UsersConfig
 from users.views import UserViewSet, PaymentsCreateAPIView, PaymentsListAPIView, PaymentsRetrieveAPIView, \
     PaymentsUpdateAPIView, PaymentsDestroyAPIView, PaymentsHistoryCreateAPIView, PaymentsHistoryListAPIView, \
@@ -24,4 +26,8 @@ urlpatterns = [
     path('paymentsHistory/<int:pk>/', PaymentsHistoryRetrieveAPIView.as_view(), name='paymentsHistory-get'),
     path('paymentsHistory/update/<int:pk>/', PaymentsHistoryUpdateAPIView.as_view(), name='paymentsHistory-update'),
     path('paymentsHistory/delete/<int:pk>/', PaymentsHistoryDestroyAPIView.as_view(), name='paymentsHistory-delete'),
+
+    # JWT
+    path('token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
+    path('token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
 ] + router.urls
