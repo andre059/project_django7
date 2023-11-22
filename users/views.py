@@ -1,7 +1,9 @@
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import viewsets, generics
 from rest_framework.filters import OrderingFilter
+from rest_framework.permissions import IsAuthenticated
 
+from users.permissions import UserIsStaff, IsUserOrStaff
 from users.serliazers import UserSerializer, PaymentsSerializer, PaymentsHistorySerializer
 from users.models import User, Payments, PaymentsHistory
 
@@ -11,6 +13,7 @@ class UserViewSet(viewsets.ModelViewSet):
 
     serializer_class = UserSerializer
     queryset = User.objects.all()
+    permission_classes = [IsAuthenticated]
 
     """Классы на основе generics для Payments"""
 
@@ -43,12 +46,14 @@ class PaymentsUpdateAPIView(generics.UpdateAPIView):
 
     serializer_class = PaymentsSerializer
     queryset = Payments.objects.all()
+    permission_classes = [IsUserOrStaff]
 
 
 class PaymentsDestroyAPIView(generics.DestroyAPIView):
     """удаление сущности"""
 
     queryset = Payments.objects.all()
+    permission_classes = [UserIsStaff]
 
     """Классы на основе generics для PaymentsHistory"""
 
@@ -78,9 +83,11 @@ class PaymentsHistoryUpdateAPIView(generics.UpdateAPIView):
 
     serializer_class = PaymentsHistorySerializer
     queryset = PaymentsHistory.objects.all()
+    permission_classes = [IsUserOrStaff]
 
 
 class PaymentsHistoryDestroyAPIView(generics.DestroyAPIView):
     """удаление сущности"""
 
     queryset = Payments.objects.all()
+    permission_classes = [UserIsStaff]
