@@ -22,6 +22,7 @@ class PaymentsCreateAPIView(generics.CreateAPIView):
     """создание сущности"""
 
     serializer_class = PaymentsSerializer
+    permission_classes = [IsAuthenticated]
 
 
 class PaymentsListAPIView(generics.ListAPIView):
@@ -32,6 +33,7 @@ class PaymentsListAPIView(generics.ListAPIView):
     filter_backends = [DjangoFilterBackend, OrderingFilter]
     filterset_fields = ('payment_date',)
     ordering_fields = ('payment_method', 'course',)
+    permission_classes = [IsAuthenticated]
 
 
 class PaymentsRetrieveAPIView(generics.RetrieveAPIView):
@@ -62,6 +64,7 @@ class PaymentsHistoryCreateAPIView(generics.CreateAPIView):
     """создание сущности"""
 
     serializer_class = PaymentsHistorySerializer
+    permission_classes = [IsAuthenticated]
 
 
 class PaymentsHistoryListAPIView(generics.ListAPIView):
@@ -69,6 +72,7 @@ class PaymentsHistoryListAPIView(generics.ListAPIView):
 
     serializer_class = PaymentsHistorySerializer
     queryset = PaymentsHistory.objects.all()
+    permission_classes = [IsAuthenticated]
 
 
 class PaymentsHistoryRetrieveAPIView(generics.RetrieveAPIView):
@@ -76,6 +80,7 @@ class PaymentsHistoryRetrieveAPIView(generics.RetrieveAPIView):
 
     serializer_class = PaymentsHistorySerializer
     queryset = PaymentsHistory.objects.all()
+    permission_classes = [IsAuthenticated]
 
 
 class PaymentsHistoryUpdateAPIView(generics.UpdateAPIView):
