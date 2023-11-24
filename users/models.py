@@ -66,3 +66,19 @@ class PaymentsHistory(models.Model):
     class Meta:
         verbose_name = 'история'
         verbose_name_plural = 'истории'
+
+
+class CourseSubscription(models.Model):
+    """Подписки"""
+
+    user = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name='пользователь')
+    course = models.ForeignKey(Course, on_delete=models.CASCADE, verbose_name='курс')
+
+    subscription = models.BooleanField(default=False, verbose_name='подписка')
+
+    def __str__(self):
+        return f'{self.user} подписка на: {self.course}--{self.subscription}'
+
+    class Meta:
+        verbose_name = 'подписка'
+        verbose_name_plural = 'подписка'

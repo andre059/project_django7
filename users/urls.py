@@ -5,7 +5,8 @@ from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 from users.apps import UsersConfig
 from users.views import UserViewSet, PaymentsCreateAPIView, PaymentsListAPIView, PaymentsRetrieveAPIView, \
     PaymentsUpdateAPIView, PaymentsDestroyAPIView, PaymentsHistoryCreateAPIView, PaymentsHistoryListAPIView, \
-    PaymentsHistoryRetrieveAPIView, PaymentsHistoryUpdateAPIView, PaymentsHistoryDestroyAPIView
+    PaymentsHistoryRetrieveAPIView, PaymentsHistoryUpdateAPIView, PaymentsHistoryDestroyAPIView, \
+    CourseSubscriptionCreateAPIView, CourseSubscriptionDestroyAPIView
 
 app_name = UsersConfig.name
 
@@ -30,4 +31,8 @@ urlpatterns = [
     # JWT
     path('token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
+
+    #  CourseSubscription
+    path('subscription/create/', CourseSubscriptionCreateAPIView.as_view(), name='subscription-create'),
+    path('subscription/delete/<int:pk>/', CourseSubscriptionDestroyAPIView.as_view(), name='subscription-delete'),
 ] + router.urls

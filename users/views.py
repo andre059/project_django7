@@ -4,8 +4,8 @@ from rest_framework.filters import OrderingFilter
 from rest_framework.permissions import IsAuthenticated
 
 from users.permissions import UserIsStaff, IsUserOrStaff
-from users.serliazers import UserSerializer, PaymentsSerializer, PaymentsHistorySerializer
-from users.models import User, Payments, PaymentsHistory
+from users.serliazers import UserSerializer, PaymentsSerializer, PaymentsHistorySerializer, CourseSubscriptionSerializer
+from users.models import User, Payments, PaymentsHistory, CourseSubscription
 
 
 class UserViewSet(viewsets.ModelViewSet):
@@ -96,3 +96,19 @@ class PaymentsHistoryDestroyAPIView(generics.DestroyAPIView):
 
     queryset = Payments.objects.all()
     permission_classes = [UserIsStaff]
+
+
+class CourseSubscriptionCreateAPIView(generics.CreateAPIView):
+    """создание сущности подписки"""
+
+    queryset = CourseSubscription.objects.all()
+    serializer_class = CourseSubscriptionSerializer
+    permission_classes = [IsAuthenticated]
+
+
+class CourseSubscriptionDestroyAPIView(generics.DestroyAPIView):
+    """удаление сущности подписки"""
+
+    queryset = CourseSubscription.objects.all()
+    serializer_class = CourseSubscriptionSerializer
+    permission_classes = [IsAuthenticated]
