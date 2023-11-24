@@ -2,6 +2,7 @@ from rest_framework import serializers
 from rest_framework.permissions import IsAuthenticated
 
 from education.models import Lesson, Course
+from education.validators import LinkVideoValidator
 
 
 class LessonSerializer(serializers.ModelSerializer):
@@ -10,6 +11,7 @@ class LessonSerializer(serializers.ModelSerializer):
         model = Lesson
         fields = '__all__'
         permission_classes = [IsAuthenticated]  # требует аутентификации пользователя для доступа к объектам модели
+        validators = [LinkVideoValidator('video_link')]
 
 
 class CourseSerializer(serializers.ModelSerializer):
