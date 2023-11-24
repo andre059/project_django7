@@ -1,5 +1,6 @@
 from rest_framework import viewsets, generics
 from education.models import Lesson, Course
+from education.paginators import EducationPaginator
 from education.serliazers import LessonSerializer, CourseSerializer
 from rest_framework.permissions import IsAuthenticated
 
@@ -14,6 +15,7 @@ class CourseViewSet(viewsets.ModelViewSet):
     serializer_class = CourseSerializer
     queryset = Course.objects.all()
     permission_classes = [IsAuthenticated]
+    pagination_class = EducationPaginator
 
     """Классы на основе generics для Lesson"""
 
@@ -31,6 +33,7 @@ class LessonListAPIView(generics.ListAPIView):
     serializer_class = LessonSerializer
     queryset = Lesson.objects.all()
     permission_classes = [IsAuthenticated]
+    pagination_class = EducationPaginator
 
 
 class LessonRetrieveAPIView(generics.RetrieveAPIView):
