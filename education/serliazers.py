@@ -10,7 +10,7 @@ class LessonSerializer(serializers.ModelSerializer):
     class Meta:
         model = Lesson
         fields = '__all__'
-        permission_classes = [IsAuthenticated]  # требует аутентификации пользователя для доступа к объектам модели
+        # permission_classes = [IsAuthenticated]  # требует аутентификации пользователя для доступа к объектам модели
         validators = [LinkVideoValidator('video_link')]  # проверка этого поля на регулярное выражение
 
 
@@ -24,4 +24,4 @@ class CourseSerializer(serializers.ModelSerializer):
     class Meta:
         model = Course
         fields = '__all__'
-        permission_classes = [IsAuthenticated]  # требует аутентификации пользователя для доступа к объектам модели
+        # permission_classes = [IsAuthenticated]  # требует аутентификации пользователя для доступа к объектам модели
