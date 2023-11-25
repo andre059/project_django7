@@ -168,7 +168,7 @@ class EducationTestCase(APITestCase):
             "link_video": "https://youtu.be/TV7xiGwprGw?si=JijksZru_r-4y18kUpdate"
         }
 
-        response = self.client.put(
+        response = self.client.delete(
             'lesson/delete/<int:pk>/',
             data=data,
         )
