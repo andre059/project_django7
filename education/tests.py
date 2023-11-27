@@ -59,7 +59,7 @@ class EducationTestCase(APITestCase):
 
         self.assertEqual(
             response.json(),
-            {'count': 1, 'next': None, 'previous': None, 'results': [{'id': 2, 'lesson_count': 0, 'title': 'List test',
+            {'count': 1, 'next': None, 'previous': None, 'results': [{'id': 1, 'lesson_count': 0, 'title': 'List test',
                                                                       'picture': None, 'description': 'List test'}]}
         )
 
