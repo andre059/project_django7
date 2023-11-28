@@ -102,29 +102,24 @@ class EducationLessonTestCase(APITestCase):
 
         print('DEBUG', response)
 
-        # self.assertEqual(
-        #     json.loads(response.body),
-        #     {
-        #         "count": 1,
-        #         "next": None,
-        #         "previous": None,
-        #         "results": [
-        #             {
-        #                 "id": 1,
-        #                 "title": "lesson Test",
-        #                 "duration": None,
-        #                 "picture": None,
-        #                 "link_video": "https://youtu.be/TV7xiGwprGw?si=JijksZru_r-4y18k",
-        #                 "course": 1
-        #             }
-        #         ]
-        #     }
-        # )
-
-        # self.assertEqual(
-            # response['content-type'],
-            # 'application/json'
-        # )
+        self.assertEqual(
+            response.json(),
+            {
+                "count": 1,
+                "next": None,
+                "previous": None,
+                "results": [
+                    {
+                        "id": 1,
+                        "title": "lesson test",
+                        "duration": None,
+                        "picture": None,
+                        "link_video": "https://youtu.be/TV7xiGwprGw?si=JijksZru_r-4y18k",
+                        "course": 1
+                    }
+                ]
+            }
+        )
 
     def test_create_lesson(self):
         """Тестирование создание урока"""
