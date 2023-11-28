@@ -10,6 +10,8 @@ class Lesson(models.Model):
     picture = models.ImageField(upload_to='preview_lesson/', verbose_name='предварительный просмотр урока', **NULLABLE)
     link_video = models.TextField(verbose_name='ссылка на видео')
 
+    course = models.ForeignKey('Course', on_delete=models.CASCADE, verbose_name='курс', **NULLABLE)
+
     def __str__(self):
         return f'{self.title} {self.duration}'
 
@@ -23,8 +25,6 @@ class Course(models.Model):
     title = models.CharField(max_length=150, verbose_name='название курса')
     picture = models.ImageField(upload_to='course_preview/', null=True, verbose_name='предварительный просмотр курса')
     description = models.TextField(verbose_name='описание')
-
-    lessons = models.ManyToManyField(Lesson, blank=True, related_name='course', verbose_name='урок')
 
     def __str__(self):
         return f'{self.title} {self.description}'

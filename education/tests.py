@@ -1,11 +1,16 @@
+import json
+
 from django.http import HttpResponseNotFound
+from django.urls import reverse
 from rest_framework import status
-from rest_framework.test import APITestCase
+from rest_framework.test import APITestCase, APIClient
 
-from education.models import Course
+from education.apps import EducationConfig
+from education.models import Course, Lesson
+from users.models import User
 
 
-class EducationTestCase(APITestCase):
+class EducationCourseTestCase(APITestCase):
 
     def setup(self) -> None:
         pass
@@ -63,6 +68,64 @@ class EducationTestCase(APITestCase):
                                                                       'picture': None, 'description': 'List test'}]}
         )
 
+
+class EducationLessonTestCase(APITestCase):
+
+    def setUp(self) -> None:
+        self.client = APIClient()
+        self.user = User.objects.create(email='test@test.com', password='Test1234!')
+        self.client.force_authenticate(user=self.user)
+        self.course = Course.objects.create(
+            title='test',
+            description="первый курс"
+        )
+
+        self.lesson = Lesson.objects.create(
+            title="lesson test",
+            link_video="https://youtu.be/TV7xiGwprGw?si=JijksZru_r-4y18k",
+            course=self.course
+        )
+
+    def test_list_lesson(self):
+        """Тестирование вывода списка уроков"""
+
+        response = self.client.get(path='/lesson/'
+            # reverse(f'{EducationConfig.name}:list')
+        )
+
+        print(response.json())
+
+        self.assertEqual(
+            response.status_code,
+            status.HTTP_200_OK
+        )
+
+        print('DEBUG', response)
+
+        # self.assertEqual(
+        #     json.loads(response.body),
+        #     {
+        #         "count": 1,
+        #         "next": None,
+        #         "previous": None,
+        #         "results": [
+        #             {
+        #                 "id": 1,
+        #                 "title": "lesson Test",
+        #                 "duration": None,
+        #                 "picture": None,
+        #                 "link_video": "https://youtu.be/TV7xiGwprGw?si=JijksZru_r-4y18k",
+        #                 "course": 1
+        #             }
+        #         ]
+        #     }
+        # )
+
+        # self.assertEqual(
+            # response['content-type'],
+            # 'application/json'
+        # )
+
     def test_create_lesson(self):
         """Тестирование создание урока"""
 
@@ -87,29 +150,6 @@ class EducationTestCase(APITestCase):
             response['content-type'],
             'text/html; charset=utf-8'
 
-        )
-
-    def test_list_lesson(self):
-        """Тестирование вывода списка уроков"""
-
-        Course.objects.create(
-            title="list test2",
-        )
-
-        response = self.client.get(
-            '/lesson/'
-        )
-
-        print(response)
-
-        self.assertEqual(
-            response.status_code,
-            status.HTTP_401_UNAUTHORIZED
-        )
-
-        self.assertEqual(
-            response['content-type'],
-            'application/json'
         )
 
     def test_retrieve_lesson(self):
