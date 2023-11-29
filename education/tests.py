@@ -1,12 +1,8 @@
-import json
-
-from django.http import HttpResponseNotFound
 from django.urls import reverse
 from rest_framework import status
 from rest_framework.test import APITestCase, APIClient
 
-from education.apps import EducationConfig
-from education.models import Course, Lesson
+from education.models import Course, Lesson, Subscription
 from users.models import User
 
 
@@ -36,7 +32,7 @@ class EducationCourseTestCase(APITestCase):
 
         self.assertEqual(
             response.json(),
-            {'id': 1, 'lesson_count': 0, 'title': 'Test', 'picture': None, 'description': 'Test'}
+            {'id': 1, 'lesson_count': 0, 'lessons': [], 'title': 'Test', 'picture': None, 'description': 'Test'}
         )
 
         self.assertTrue(
@@ -64,8 +60,9 @@ class EducationCourseTestCase(APITestCase):
 
         self.assertEqual(
             response.json(),
-            {'count': 1, 'next': None, 'previous': None, 'results': [{'id': 1, 'lesson_count': 0, 'title': 'List test',
-                                                                      'picture': None, 'description': 'List test'}]}
+            {'count': 1, 'next': None, 'previous': None, 'results': [{'id': 2, 'lesson_count': 0, 'lessons': [],
+                                                                      'title': 'List test', 'picture': None,
+                                                                      'description': 'List test'}]}
         )
 
 
@@ -73,8 +70,9 @@ class EducationLessonTestCase(APITestCase):
 
     def setUp(self) -> None:
         self.client = APIClient()
-        self.user = User.objects.create(email='test@test.com', password='Test1234!')
+        self.user = User.objects.create(email='test@test.com', password='Test1234!', is_staff=True, is_superuser=True)
         self.client.force_authenticate(user=self.user)
+
         self.course = Course.objects.create(
             title='test',
             description="первый курс"
@@ -89,18 +87,14 @@ class EducationLessonTestCase(APITestCase):
     def test_list_lesson(self):
         """Тестирование вывода списка уроков"""
 
-        response = self.client.get(path='/lesson/'
-            # reverse(f'{EducationConfig.name}:list')
-        )
+        response = self.client.get(path='/lesson/')
 
-        print(response.json())
+        # print(response.json())
 
         self.assertEqual(
             response.status_code,
             status.HTTP_200_OK
         )
-
-        print('DEBUG', response)
 
         self.assertEqual(
             response.json(),
@@ -110,12 +104,12 @@ class EducationLessonTestCase(APITestCase):
                 "previous": None,
                 "results": [
                     {
-                        "id": 1,
+                        "id": 4,
                         "title": "lesson test",
                         "duration": None,
                         "picture": None,
                         "link_video": "https://youtu.be/TV7xiGwprGw?si=JijksZru_r-4y18k",
-                        "course": 1
+                        "course": 5
                     }
                 ]
             }
@@ -125,49 +119,51 @@ class EducationLessonTestCase(APITestCase):
         """Тестирование создание урока"""
 
         data = {
-            "title": "create test",
+            "title": "create test2",
             "link_video": "https://youtu.be/TV7xiGwprGw?si=JijksZru_r-4y18k"
         }
 
         response = self.client.post(
-            'lesson/create/',
-            data=data,
+            reverse('education:lesson_create'),
+            data=data
         )
 
-        # print(response)
+        # print(response.json())
 
         self.assertEqual(
             response.status_code,
-            status.HTTP_404_NOT_FOUND
+            status.HTTP_201_CREATED
         )
 
         self.assertEqual(
-            response['content-type'],
-            'text/html; charset=utf-8'
-
+            Lesson.objects.all().count(),
+            2
         )
 
     def test_retrieve_lesson(self):
         """Тестирование вывода списка одного урока"""
 
-        Course.objects.create(
-            title="list test2",
-        )
-
         response = self.client.get(
-            'lesson/<int:pk>/'
+            f'/lesson/{self.lesson.id}/'
         )
 
-        print(response)
+        # print(response.json())
 
         self.assertEqual(
             response.status_code,
-            status.HTTP_404_NOT_FOUND
+            status.HTTP_200_OK
         )
 
         self.assertEqual(
-            response['content-type'],
-            'text/html; charset=utf-8'
+            response.json(),
+            {
+                'id': self.lesson.id,
+                'title': 'lesson test',
+                'duration': None,
+                'picture': None,
+                'link_video': "https://youtu.be/TV7xiGwprGw?si=JijksZru_r-4y18k",
+                'course': self.course.id,
+            }
         )
 
     def test_update_lesson(self):
@@ -175,47 +171,48 @@ class EducationLessonTestCase(APITestCase):
 
         data = {
             "title": "update test",
-            "link_video": "https://youtu.be/TV7xiGwprGw?si=JijksZru_r-4y18kUpdate"
         }
 
-        response = self.client.put(
-            'lesson/update/<int:pk>/',
+        response = self.client.patch(
+            f'/lesson/update/{self.lesson.id}/',
             data=data,
         )
 
-        print(response)
+        # print(response.json())
 
         self.assertEqual(
             response.status_code,
-            status.HTTP_404_NOT_FOUND
+            status.HTTP_200_OK
         )
 
         self.assertEqual(
-            response['content-type'],
-            'text/html; charset=utf-8'
+            response.json(),
+            {
+                'id': self.lesson.id,
+                'title': 'update test',
+                'duration': None,
+                'picture': None,
+                'link_video': "https://youtu.be/TV7xiGwprGw?si=JijksZru_r-4y18k",
+                'course': self.course.id,
+            }
         )
 
     def test_destroy_lesson(self):
         """Тестирование удаление урока"""
 
-        data = {
-            "title": "update test",
-            "link_video": "https://youtu.be/TV7xiGwprGw?si=JijksZru_r-4y18kUpdate"
-        }
-
         response = self.client.delete(
-            'lesson/delete/<int:pk>/',
-            data=data,
+            f'/lesson/delete/{self.lesson.id}/'
         )
 
-        print(response)
+        # print(response)
 
         self.assertEqual(
             response.status_code,
-            status.HTTP_404_NOT_FOUND
+            status.HTTP_204_NO_CONTENT
         )
 
-        self.assertEqual(
-            response['content-type'],
-            'text/html; charset=utf-8'
-        )
+
+# def tearDown(self):
+#     Course.objects.all().delete()
+#     Lesson.objects.all().delete()
+#     Subscription.objects.all().delete()
