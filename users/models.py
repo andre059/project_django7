@@ -1,7 +1,8 @@
+from django.conf import settings
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 
-from education.models import Course
+from education.models import Course, Lesson
 
 NULLABLE = {'blank': True, 'null': True}
 
@@ -33,15 +34,32 @@ class User(AbstractUser):
 class Payments(models.Model):
     """Платежи"""
 
+    CASH = 'cash'
+    TRANSFER = 'transfer'
+
+    METHOD_CHOICES = [
+        (CASH, 'Наличные'),
+        (TRANSFER, 'Перевод на счет')
+    ]
+
+    CURRENCY = [
+        ('usd', 'USD'),
+        ('eur', 'EURO')
+    ]
+
     email = models.EmailField(unique=True, null=True, verbose_name='почта')
     first_name = models.CharField(max_length=150, null=True, verbose_name='имя пользователя')
     payment_date = models.DateTimeField(auto_now_add=True, verbose_name='дата оплаты')
     course_paid = models.BooleanField(default=False, verbose_name='оплаченный курс')
     payment_amount = models.IntegerField(verbose_name='сумма оплаты')
-    payment_method = models.CharField(max_length=150, verbose_name='способ оплаты')
+    payment_method = models.CharField(max_length=150, verbose_name='способ оплаты', default='transfer', choices=METHOD_CHOICES)
 
     user = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name='пользователь')
     course = models.ForeignKey(Course, on_delete=models.CASCADE, verbose_name='курс', **NULLABLE)
+    lesson = models.ForeignKey(Lesson, on_delete=models.CASCADE, verbose_name='Урок', **NULLABLE)
+
+    stripe_id = models.CharField(max_length=100, verbose_name='Stripe ID', **NULLABLE)
+    stripe_status = models.CharField(max_length=50, verbose_name='Stripe статус', **NULLABLE)
 
     def __str__(self):
         return f'{self.user} {self.payment_date} {self.payment_amount}'
@@ -71,13 +89,14 @@ class PaymentsHistory(models.Model):
 class CourseSubscription(models.Model):
     """Подписки"""
 
-    user = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name='пользователь')
+    user = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name='пользователь', related_name='course_subscriptions')
     course = models.ForeignKey(Course, on_delete=models.CASCADE, verbose_name='курс')
+    status = models.BooleanField(default=True, verbose_name='Статус подписки')
 
-    subscription = models.BooleanField(default=False, verbose_name='подписка')
+    subscriptions = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, **NULLABLE, verbose_name='подписки')
 
     def __str__(self):
-        return f'{self.user} подписка на: {self.course}--{self.subscription}'
+        return f'{self.user} подписка на: {self.course}--{self.status}'
 
     class Meta:
         verbose_name = 'подписка'
