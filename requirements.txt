@@ -1,5 +1,7 @@
-django
+django~=4.2.7
 psycopg2-binary
 pillow
-djangorestframework
-django-filter
+djangorestframework~=3.14.0
+django-filter~=23.3
+requests~=2.31.0
+stripe~=7.7.0

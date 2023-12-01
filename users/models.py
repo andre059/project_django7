@@ -53,6 +53,7 @@ class Payments(models.Model):
     course_paid = models.BooleanField(default=False, verbose_name='оплаченный курс')
     payment_amount = models.IntegerField(verbose_name='сумма оплаты')
     payment_method = models.CharField(max_length=150, verbose_name='способ оплаты', default='transfer', choices=METHOD_CHOICES)
+    currency = models.CharField(choices=CURRENCY, verbose_name='валюта', default='usd')
 
     user = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name='пользователь')
     course = models.ForeignKey(Course, on_delete=models.CASCADE, verbose_name='курс', **NULLABLE)

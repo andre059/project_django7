@@ -33,7 +33,7 @@ class Course(models.Model):
 
     author = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, **NULLABLE, verbose_name='Автор')
 
-    price = models.PositiveIntegerField(default=0, verbose_name='Цена')
+    course_price = models.PositiveIntegerField(default=0, verbose_name='Цена курса')
     update_time = models.DateTimeField(auto_now=True, **NULLABLE, verbose_name='Обновление')
 
     def __str__(self):
