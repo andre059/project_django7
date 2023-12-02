@@ -17,6 +17,11 @@ class CourseViewSet(viewsets.ModelViewSet):
     permission_classes = [AllowAny]
     pagination_class = EducationPaginator
 
+    def perform_create(self, serializer):
+        new_course = serializer.save()
+        new_course.author = self.request.user
+        new_course.save()
+
     """Классы на основе generics для Lesson"""
 
 

@@ -25,22 +25,24 @@ def convert_currencies(rub_prise):
 def create_stripe_checkout_session(course_id):
     course = Course.objects.get(pk=course_id)
 
-    starter_subscription = stripe.Product.create(
-        name=course,
+    product = stripe.Product.create(
+        name=course.title,
         description="$100/Month subscription",
+        type="service",
     )
 
-    starter_subscription_price = stripe.Price.create(
-        unit_amount=course.course_price,
+    price = stripe.Price.create(
+        unit_amount=course.price,
         currency="usd",
-        product=starter_subscription['id'],
+        product=product.get('id'),
+        stripe_account='STRIPE_SECRET_KEY',
     )
 
     session = stripe.checkout.Session.create(
         success_url="https://example.com/success",
         line_items=[
             {
-                "price": starter_subscription_price.id,
+                "price": price.id,
                 "quantity": 1,
             },
         ],
