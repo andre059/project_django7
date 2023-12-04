@@ -5,3 +5,5 @@ djangorestframework~=3.14.0
 django-filter~=23.3
 requests~=2.31.0
 stripe~=7.7.0
+celery
+eventlet

@@ -5,6 +5,7 @@ from education.serliazers import LessonSerializer, CourseSerializer
 from rest_framework.permissions import IsAuthenticated, AllowAny
 
 from users.permissions import IsUserOrStaff, UserIsStaff
+from .tasks import send_updated_email
 
 """Класс на основе ViewSet для Course"""
 
@@ -30,6 +31,13 @@ class LessonCreateAPIView(generics.CreateAPIView):
 
     serializer_class = LessonSerializer
     permission_classes = [IsAuthenticated]
+
+    def perform_create(self, serializer):
+        new_course = serializer.save()
+        new_course.author = self.request.user
+        new_course.save()
+
+        send_updated_email.delay(new_course.id)
 
 
 class LessonListAPIView(generics.ListAPIView):
