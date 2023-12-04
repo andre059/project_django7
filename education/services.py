@@ -1,8 +1,11 @@
+import json
 import os
+from datetime import datetime, timedelta
 
 import requests
 import stripe
 from django.conf import settings
+from django_celery_beat.models import PeriodicTask, IntervalSchedule
 from rest_framework import status
 
 from education.models import Course
@@ -60,3 +63,20 @@ def get_stripe_payment(pk):
     )
 
     return payment_detail
+
+
+def set_schedule(*args, **kwargs):
+    schedule, created = IntervalSchedule.objects.get_or_create(
+        every=10,
+        period=IntervalSchedule.SECONDS,
+    )
+    PeriodicTask.objects.create(
+        interval=schedule,
+        name='Importing contacts',
+        task='proj.tasks.import_contacts',
+        args=json.dumps(['arg1', 'arg2']),
+        kwargs=json.dumps({
+            'be_careful': True,
+        }),
+        expires=datetime.utcnow() + timedelta(seconds=30)
+    )
