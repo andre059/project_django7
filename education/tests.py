@@ -2,17 +2,17 @@ from django.urls import reverse
 from rest_framework import status
 from rest_framework.test import APITestCase, APIClient
 
-from education.models import Course, Lesson, Subscription
+from education.models import Course, Lesson
 from users.models import User
 
 
 class EducationCourseTestCase(APITestCase):
 
-    def setup(self) -> None:
+    def setUp(self) -> None:
         pass
 
     def test_create_course(self):
-        """Тетирование создание курса"""
+        """Тестирование создание курса"""
 
         data = {
             "title": "Test",
@@ -174,7 +174,7 @@ class EducationLessonTestCase(APITestCase):
         }
 
         response = self.client.patch(
-            f'/lesson/update/{self.lesson.id}/',
+                f'/lesson/update/{self.lesson.id}/',
             data=data,
         )
 
